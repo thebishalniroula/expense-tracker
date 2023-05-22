@@ -17,8 +17,8 @@ declare module 'next-auth' {
     user: {
       id: string
       // ...other properties
-      // role: UserRole;
-    } & DefaultSession['user']
+      // role: UserRole
+    }
   }
 
   // interface User {
@@ -34,20 +34,29 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session({ session, token }) {
+      if (session.user) {
+        // @ts-ignore
+        session.user.id = token.id as string
+        session.user.email = token.email as string
+      }
+      return session
+    },
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+      }
+      return token
+    },
   },
   adapter: PrismaAdapter(prisma),
+  session: { strategy: 'jwt' },
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -68,12 +77,7 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) {
           throw new Error('Invalid password')
         }
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        }
+        return { id: user.id, email: user.email }
       },
     }),
     /**

@@ -6,6 +6,7 @@ import { api } from '~/utils/api'
 
 import '~/styles/globals.css'
 import 'react-toastify/dist/ReactToastify.css'
+import '~/styles/radix.css'
 
 import { ToastContainer } from 'react-toastify'
 

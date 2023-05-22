@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -57,6 +57,13 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+
+    income      Income[]
+    expenses    Expense[]
+    investments Investment[]
+
+    totlalSavings Int @default(0)
+    totalExpenses Int @default(0)
 }
 
 model VerificationToken {
@@ -65,4 +72,53 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Income {
+    id          String      @id @default(cuid())
+    name        String
+    isRecurring Boolean
+    recurrance  Recurrance?
+    date        DateTime
+    amount      String
+    user        User?       @relation(fields: [userId], references: [id])
+    userId      String?
+}
+
+model Expense {
+    id          String      @id @default(cuid())
+    name        String
+    isRecurring Boolean
+    recurrance  Recurrance?
+    category    Category
+    date        DateTime
+    amount      String
+    user        User?       @relation(fields: [userId], references: [id])
+    userId      String?
+}
+
+model Investment {
+    id     String   @id @default(cuid())
+    name   String
+    date   DateTime
+    amount String
+    roi    String
+    user   User?    @relation(fields: [userId], references: [id])
+    userId String?
+}
+
+enum Recurrance {
+    Daily
+    Weekly
+    Monthly
+    Yearly
+}
+
+enum Category {
+    Education
+    Health
+    Entertainment
+    Food
+    Travel
+    Other
 }
