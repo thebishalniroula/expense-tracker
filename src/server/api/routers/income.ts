@@ -10,6 +10,7 @@ export const incomeRouter = createTRPCRouter({
         date: z.date(),
         amount: z.string(),
         isRecurring: z.boolean(),
+        // @Todo - Find a way to infer these types directly from db schema
         recurrance: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).optional().nullable(),
       })
     )
@@ -31,12 +32,53 @@ export const incomeRouter = createTRPCRouter({
             id: ctx.session.user.id,
           },
           data: {
-            totlalSavings: {
+            totalIncome: {
               increment: parseInt(amount),
             },
           },
         }),
       ])
       return user
+    }),
+  getAll: protectedProcedure
+    .input(
+      z
+        .object({
+          filters: z
+            .object({
+              date: z
+                .object({
+                  from: z.date().optional(),
+                  to: z.date().optional(),
+                })
+                .optional(),
+              recurrance: z.enum(['Weekly', 'Monthly', 'Yearly']).optional().nullable(),
+            })
+            .optional(),
+        })
+        .optional()
+    )
+    .query(({ ctx, input }) => {
+      // @Todo - implement pagination
+      return ctx.prisma.income.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          date: {
+            gte: input?.filters?.date?.from,
+            lte: input?.filters?.date?.to,
+          },
+          recurrance: input?.filters?.recurrance,
+        },
+        orderBy: {
+          date: 'desc',
+        },
+        select: {
+          id: true,
+          name: true,
+          amount: true,
+          date: true,
+          recurrance: true,
+        },
+      })
     }),
 })

@@ -23,6 +23,7 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "chart.js": "^4.3.0",
     "next": "^13.4.1",
     "next-auth": "^4.21.0",
     "react": "18.2.0",
@@ -32,6 +33,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/chart.js": "^2.9.37",
     "@types/eslint": "^8.21.3",
     "@types/node": "^18.15.5",
     "@types/prettier": "^2.7.2",

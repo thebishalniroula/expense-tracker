@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/radix.css'
 
 import { ToastContainer } from 'react-toastify'
+import Sidebar from '~/components/layout/Sidebar'
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
@@ -25,9 +26,11 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
         pauseOnHover
         theme='light'
       />
-      <Component {...pageProps} />
+      <Sidebar />
+      <main className='ml-48 p-5 max-h-screen overflow-y-scroll'>
+        <Component {...pageProps} />
+      </main>
     </SessionProvider>
   )
 }
-
 export default api.withTRPC(MyApp)

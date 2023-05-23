@@ -7,6 +7,7 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        // @Todo - Find a way to infer these types directly from db schema
         category: z.enum(['Health', 'Education', 'Entertainment', 'Travel', 'Food', 'Other']),
         date: z.date(),
         amount: z.string(),
@@ -40,5 +41,51 @@ export const expenseRouter = createTRPCRouter({
         }),
       ])
       return expense
+    }),
+  getAll: protectedProcedure
+    .input(
+      z
+        .object({
+          filters: z
+            .object({
+              date: z
+                .object({
+                  from: z.date().optional(),
+                  to: z.date().optional(),
+                })
+                .optional(),
+              recurrance: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).optional().nullable(),
+              category: z
+                .enum(['Education', 'Health', 'Entertainment', 'Food', 'Travel', 'Other'])
+                .optional()
+                .nullable(),
+            })
+            .optional(),
+        })
+        .optional()
+    )
+    .query(({ ctx, input }) => {
+      // @Todo - implement pagination
+      return ctx.prisma.expense.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          date: {
+            gte: input?.filters?.date?.from,
+            lte: input?.filters?.date?.to,
+          },
+          recurrance: input?.filters?.recurrance,
+        },
+        orderBy: {
+          date: 'desc',
+        },
+        select: {
+          id: true,
+          name: true,
+          amount: true,
+          date: true,
+          recurrance: true,
+          category: true,
+        },
+      })
     }),
 })
