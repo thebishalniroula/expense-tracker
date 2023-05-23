@@ -10,8 +10,10 @@ import '~/styles/radix.css'
 
 import { ToastContainer } from 'react-toastify'
 import Sidebar from '~/components/layout/Sidebar'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
+  ChartJS.register(ArcElement, Tooltip, Legend)
   return (
     <SessionProvider session={session}>
       <ToastContainer

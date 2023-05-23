@@ -52,7 +52,7 @@ export const incomeRouter = createTRPCRouter({
                   to: z.date().optional(),
                 })
                 .optional(),
-              recurrance: z.enum(['Weekly', 'Monthly', 'Yearly']).optional().nullable(),
+              recurrance: z.enum(['All', 'Weekly', 'Monthly', 'Yearly']).optional().nullable(),
             })
             .optional(),
         })
@@ -60,6 +60,8 @@ export const incomeRouter = createTRPCRouter({
     )
     .query(({ ctx, input }) => {
       // @Todo - implement pagination
+      console.log(input?.filters?.recurrance)
+
       return ctx.prisma.income.findMany({
         where: {
           userId: ctx.session.user.id,
@@ -67,7 +69,7 @@ export const incomeRouter = createTRPCRouter({
             gte: input?.filters?.date?.from,
             lte: input?.filters?.date?.to,
           },
-          recurrance: input?.filters?.recurrance,
+          recurrance: input?.filters?.recurrance === 'All' ? undefined : input?.filters?.recurrance,
         },
         orderBy: {
           date: 'desc',

@@ -16,7 +16,7 @@ const ExpenseTable = ({ filteredLists }: ExpenseTableProps) => (
             <th scope='col' className='px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase '>
               Date
             </th>
-            <th scope='col' className='px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase '>
+            <th scope='col' className='px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase '>
               Recurrance
             </th>
             <th scope='col' className='px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase '>
@@ -26,14 +26,15 @@ const ExpenseTable = ({ filteredLists }: ExpenseTableProps) => (
         </thead>
         {filteredLists?.length ? (
           <tbody className='divide-y divide-gray-200'>
-            {filteredLists?.map((income) => (
-              <tr key={income.id}>
-                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{income.name}</td>
-                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>Rs {income.amount}</td>
+            {filteredLists?.map((expense) => (
+              <tr key={expense.id}>
+                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{expense.name}</td>
+                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>Rs {expense.amount}</td>
                 <td className='px-6 py-4 text-sm text-gray-800 text-left whitespace-nowrap'>
-                  {income.date.toDateString()}
+                  {expense.date.toDateString()}
                 </td>
-                <td className='px-6 py-4 text-sm text-right whitespace-nowrap'>{income.recurrance || 'N/A'}</td>
+                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{expense.recurrance ?? 'Once'}</td>
+                <td className='px-6 py-4 text-sm text-right whitespace-nowrap'>{expense.category}</td>
               </tr>
             ))}
           </tbody>

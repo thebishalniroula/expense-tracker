@@ -2,8 +2,9 @@ import { Recurrance } from '~/server/db'
 import React, { useState } from 'react'
 import { api } from '~/utils/api'
 import IncomeTable from '~/components/income/IncomeTable'
+import IncomeTableFilters from '~/components/income/IncomeTableFilters'
 
-type FiltersType = {
+export type FiltersType = {
   date?: {
     from?: Date
     to?: Date
@@ -33,6 +34,7 @@ export default function Table() {
     : income
   return (
     <div className='flex flex-col'>
+      <h1 className='px-3 text-2xl font-medium tracking-wide mb-5'>Income</h1>
       <div className='overflow-x-auto'>
         <div className='flex py-3 pl-2 gap-8'>
           <div className='relative max-w-xs'>
@@ -91,63 +93,7 @@ export default function Table() {
         </div>
         {/* --------Filters start----------*/}
         {showFilters && (
-          <div className='flex gap-8 items-center flex-wrap'>
-            <div className='flex gap-5'>
-              <div>
-                <label className='pr-3'>From</label>
-                <input
-                  className='Input'
-                  type='date'
-                  onChange={(e) => {
-                    setFiltersApplied((prev) => false)
-                    setFilters((prev) => ({ ...prev, date: { ...prev.date, from: new Date(e.target.value) } }))
-                  }}
-                  defaultValue={filters.date?.from?.toISOString().split('T')[0]}
-                />
-              </div>
-              <div>
-                <label className='pr-3'>To</label>
-                <input
-                  type='date'
-                  className='Input'
-                  defaultValue={filters.date?.to?.toISOString().split('T')[0]}
-                  onChange={(e) => {
-                    setFiltersApplied((prev) => false)
-                    setFilters((prev) => ({ ...prev, date: { ...prev.date, to: new Date(e.target.value) } }))
-                  }}
-                />
-              </div>
-            </div>
-            <div className='flex gap-5 items-center'>
-              <label htmlFor=''>Recurrance</label>
-              <select
-                id='recurrance'
-                className='block Input'
-                // value={recurrance || ''}
-                onChange={(e) => {
-                  setFiltersApplied((prev) => false)
-
-                  setFilters((prev) => ({
-                    ...prev,
-                    recurrance: e.target.value === 'All' ? undefined : (e.target.value as Exclude<Recurrance, 'Daily'>),
-                  }))
-                }}
-              >
-                <option value={undefined}>All</option>
-                <option value='Weekly'>Weekly</option>
-                <option value='Monthly'>Monthly</option>
-                <option value='Yearly'>Yearly</option>
-              </select>
-            </div>{' '}
-            <div className='my-5 self-end'>
-              <button
-                className='px-3 py-2 bg-purple-300 rounded-md cursor-pointer hover:bg-purple-500 hover:text-slate-50 active:bg-purple-700'
-                onClick={() => setFiltersApplied(true)}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
+          <IncomeTableFilters filters={filters} setFilters={setFilters} setFiltersApplied={setFiltersApplied} />
         )}
         {/* ------------Filters end--------- */}
         <IncomeTable filteredLists={filteredLists} />
