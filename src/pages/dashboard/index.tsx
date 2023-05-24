@@ -16,12 +16,19 @@ const Dashboard = () => {
             totalExpenses={user.totalExpenses}
             totalInvestments={user.totalInvestments}
           />
-          <div className=' flex justify-center flex-col items-center gap-3 border p-5 shadow-md'>
+          <div className=' flex justify-center flex-col items-center gap-3 border p-5 shadow-md min-h-[15rem]'>
             <h2 className=' text-xl tracking-wide font-medium capitalize'>Savings vs Expenses</h2>
-            <DoughnoutChart totalExpenses={user.totalExpenses} totalIncome={user.totalIncome} />
+            {!user.totalIncome || !user.totalExpenses ? (
+              <p>Enter your income and expense data before you can visualze your budget.</p>
+            ) : (
+              <DoughnoutChart totalExpenses={user.totalExpenses} totalIncome={user.totalIncome} />
+            )}
           </div>
         </div>
-        <Tabs />
+        <div>
+          <h2 className='text-center text-xl font-medium mb-5'>Add new</h2>
+          <Tabs />
+        </div>
       </div>
     </>
   )

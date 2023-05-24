@@ -15,6 +15,26 @@ const PieChart = () => {
       curatedData[e.category] = parseInt(e.amount)
     }
   })
+
+  const options = {
+    plugins: {
+      datalabels: {
+        formatter: (value: number, ctx: any) => {
+          let sum = 0
+          let dataArr = ctx.chart.data.datasets[0].data
+          dataArr.forEach((data: number) => {
+            sum += data
+          })
+          let percentage = ((value * 100) / sum).toFixed(2) + '%'
+          return percentage
+        },
+
+        anchor: 'end',
+        align: 'start',
+      },
+    },
+  }
+
   return (
     <div className='h-60'>
       <Pie
@@ -36,6 +56,8 @@ const PieChart = () => {
             },
           ],
         }}
+        // @ts-ignore
+        options={options}
       />
     </div>
   )

@@ -1,11 +1,9 @@
 import { type GetServerSidePropsContext } from 'next'
 import { getServerSession, type NextAuthOptions, type DefaultSession } from 'next-auth'
-import DiscordProvider from 'next-auth/providers/discord'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { env } from '~/env.mjs'
 import { prisma } from '~/server/db'
-
+import bcrypt from 'bcryptjs'
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -33,6 +31,9 @@ declare module 'next-auth' {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: '/signin',
+  },
   callbacks: {
     session({ session, token }) {
       if (session.user) {
@@ -53,27 +54,24 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   providers: [
-    // DiscordProvider({
-    //   clientId: env.DISCORD_CLIENT_ID,
-    //   clientSecret: env.DISCORD_CLIENT_SECRET,
-    // }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      // TODO: Handle user registration, admin, pw reset, etc.
-      // TODO: Handle bcrypt install
+
       async authorize(credentials) {
+        if (!credentials?.email || !credentials.password) {
+          throw new Error('Credentials not provided.')
+        }
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
         })
         if (!user) throw new Error('No user found')
 
-        const isValid = await prisma.user.findFirst({
-          where: { email: credentials?.email, password: credentials?.password },
-        })
+        const isValid = await bcrypt.compare(credentials.password, user.password)
+
         if (!isValid) {
           throw new Error('Invalid password')
         }

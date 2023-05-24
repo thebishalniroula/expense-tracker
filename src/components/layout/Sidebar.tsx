@@ -2,6 +2,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '~/utils/cn'
+import { api } from '~/utils/api'
+import { signOut } from 'next-auth/react'
 
 const Tabs = [
   {
@@ -21,6 +23,11 @@ const Tabs = [
     link: '/dashboard/investment',
   },
 ]
+
+function getCurrentTab(path: string) {
+  const slugs = path.split('/')
+  return slugs.at(-1)
+}
 
 const Sidebar = () => {
   const router = useRouter()
@@ -43,13 +50,21 @@ const Sidebar = () => {
           {tab.title}
         </Link>
       ))}
+      <Footer />
     </div>
   )
 }
 
-function getCurrentTab(path: string) {
-  const slugs = path.split('/')
-  return slugs.at(-1)
-}
-
 export default Sidebar
+
+const Footer = () => {
+  const { data: user } = api.user.me.useQuery()
+  return (
+    <div className='w-48 absolute bottom-0 left-0 flex flex-col items-center p-5 gap-3'>
+      <p className='text-base'>{user?.email}</p>
+      <button className='border border-slate-200 p-2 hover:bg-slate-400' onClick={() => signOut()}>
+        Sign out
+      </button>
+    </div>
+  )
+}

@@ -64,6 +64,7 @@ model User {
 
     totalIncome      Int @default(0)
     totalExpenses    Int @default(0)
+    TotalSavings     Int @default(0)
     totalInvestments Int @default(0)
 }
 

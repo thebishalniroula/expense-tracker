@@ -11,6 +11,8 @@ import '~/styles/radix.css'
 import { ToastContainer } from 'react-toastify'
 import Sidebar from '~/components/layout/Sidebar'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+
 import { NextPage } from 'next'
 
 export type NextPageWithSidebar<P = {}, IP = P> = NextPage<P, IP> & {
@@ -25,7 +27,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }: AppPropsWithSidebar) => {
   // This is important for charjs to work
-  ChartJS.register(ArcElement, Tooltip, Legend)
+  ChartJS.defaults.set('plugins.datalabels', {
+    color: 'white',
+  })
+  ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
   const hasSidbar = Component.showSidebar !== undefined ? Component.showSidebar : true
 
