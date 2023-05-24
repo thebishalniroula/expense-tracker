@@ -45,7 +45,7 @@ const Sidebar = () => {
             'p-4 rounded-md cursor-pointer',
             tab.title.toLowerCase() === currentTab?.toLowerCase() ? 'bg-slate-300' : ''
           )}
-          key={idx + tab.link}
+          key={idx.toString() + tab.link}
         >
           {tab.title}
         </Link>
