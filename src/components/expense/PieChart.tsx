@@ -7,7 +7,7 @@ const PieChart = () => {
     return null
   }
 
-  let curatedData: any = {}
+  const curatedData: any = {}
   expense.map((e) => {
     if (curatedData[e.category]) {
       curatedData[e.category] += parseInt(e.amount)
