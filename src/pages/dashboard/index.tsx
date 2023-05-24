@@ -8,6 +8,7 @@ const Dashboard = () => {
   if (!user) return null
   return (
     <>
+      <h1 className='px-5 text-2xl font-medium tracking-wide mb-5'>Dashboard</h1>
       <div className='flex justify-around flex-wrap gap-5'>
         <div className='flex flex-col gap-20'>
           <Summary

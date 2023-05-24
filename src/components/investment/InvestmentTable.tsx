@@ -1,7 +1,7 @@
-import { Income } from '~/server/db'
-type IncomeTableProps = { filteredLists: Omit<Income, 'isRecurring' | 'userId'>[] | undefined }
+import { Investment } from '~/server/db'
+type InvestmentTableProps = { filteredLists: Omit<Investment, 'userId'>[] | undefined }
 
-const IncomeTable = ({ filteredLists }: IncomeTableProps) => (
+const InvestmentTable = ({ filteredLists }: InvestmentTableProps) => (
   <div className='p-1.5 max-w-3xl align-middle'>
     <div className='overflow-hidden border rounded-lg'>
       <table className='min-w-full divide-y divide-gray-200'>
@@ -16,21 +16,27 @@ const IncomeTable = ({ filteredLists }: IncomeTableProps) => (
             <th scope='col' className='px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase '>
               Date
             </th>
+            <th scope='col' className='px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase '>
+              ROI
+            </th>
             <th scope='col' className='px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase '>
-              Recurrance
+              Per
             </th>
           </tr>
         </thead>
         {filteredLists?.length ? (
           <tbody className='divide-y divide-gray-200'>
-            {filteredLists?.map((income) => (
-              <tr key={income.id}>
-                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{income.name}</td>
-                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>Rs {income.amount}</td>
+            {filteredLists?.map((investment) => (
+              <tr key={investment.id}>
+                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{investment.name}</td>
+                <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>Rs {investment.amount} </td>
                 <td className='px-6 py-4 text-sm text-gray-800 text-left whitespace-nowrap'>
-                  {income.date.toDateString()}
+                  {investment.date.toDateString()}
                 </td>
-                <td className='px-6 py-4 text-sm text-right whitespace-nowrap'>{income.recurrance || 'Once'}</td>
+                <td className='px-6 py-4 text-sm text-left whitespace-nowrap'>{investment.roi} %</td>
+                <td className='px-6 py-4 text-sm text-right whitespace-nowrap'>
+                  Per {investment.roiRecurrance.split('ly')}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -41,4 +47,4 @@ const IncomeTable = ({ filteredLists }: IncomeTableProps) => (
     </div>
   </div>
 )
-export default IncomeTable
+export default InvestmentTable

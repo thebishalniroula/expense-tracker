@@ -1,4 +1,4 @@
-import { type AppType } from 'next/app'
+import { AppProps, type AppType } from 'next/app'
 import { type Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 
@@ -11,9 +11,24 @@ import '~/styles/radix.css'
 import { ToastContainer } from 'react-toastify'
 import Sidebar from '~/components/layout/Sidebar'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { NextPage } from 'next'
 
-const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
+export type NextPageWithSidebar<P = {}, IP = P> = NextPage<P, IP> & {
+  showSidebar?: boolean
+}
+type AppPropsWithSidebar = AppProps & {
+  Component: NextPageWithSidebar
+}
+
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithSidebar) => {
+  // This is important for charjs to work
   ChartJS.register(ArcElement, Tooltip, Legend)
+
+  const hasSidbar = Component.showSidebar !== undefined ? Component.showSidebar : true
+
   return (
     <SessionProvider session={session}>
       <ToastContainer
@@ -28,8 +43,8 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
         pauseOnHover
         theme='light'
       />
-      <Sidebar />
-      <main className='ml-48 p-5 max-h-screen overflow-y-scroll'>
+      {hasSidbar && <Sidebar />}
+      <main className={hasSidbar ? 'ml-48 p-5 h-screen overflow-y-scroll' : ''}>
         <Component {...pageProps} />
       </main>
     </SessionProvider>

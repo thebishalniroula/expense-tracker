@@ -1,26 +1,24 @@
-import { Recurrance } from '~/server/db'
 import React, { useEffect, useState } from 'react'
 import { api } from '~/utils/api'
-import IncomeTable from '~/components/income/IncomeTable'
-import IncomeTableFilters from '~/components/income/IncomeTableFilters'
+import InvestmentTable from '~/components/investment/InvestmentTable'
+import InvestmentTableFilters from '~/components/investment/InvestmentTableFilters'
 
 export type FiltersType = {
   date?: {
     from?: Date
     to?: Date
   }
-  recurrance?: Exclude<Recurrance, 'Daily'>
 }
 
 export default function Table() {
   const [searchString, setSearchString] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<FiltersType>({})
-  const { data: income, isLoading, refetch } = api.income.getAll.useQuery({ filters })
+  const { data: income, isLoading, refetch } = api.investment.getAll.useQuery({ filters })
 
   useEffect(() => {
     refetch()
-  }, [filters.date?.from, filters.date?.to, filters.recurrance])
+  }, [filters.date?.from, filters.date?.to])
 
   if (!showFilters && isLoading) {
     return <div className='flex justify-center items-center h-screen text-xl'>Loading...</div>
@@ -36,7 +34,7 @@ export default function Table() {
 
   return (
     <div className='flex flex-col'>
-      <h1 className='px-3 text-2xl font-medium tracking-wide mb-5'>Income</h1>
+      <h1 className='px-3 text-2xl font-medium tracking-wide mb-5'>Investment</h1>
       <div className='overflow-x-auto'>
         <div className='flex py-3 pl-2 gap-8'>
           <div className='relative max-w-xs'>
@@ -94,9 +92,9 @@ export default function Table() {
           </div>
         </div>
         {/* --------Filters start----------*/}
-        {showFilters && <IncomeTableFilters setFilters={setFilters} />}
+        {showFilters && <InvestmentTableFilters setFilters={setFilters} />}
         {/* ------------Filters end--------- */}
-        <IncomeTable filteredLists={filteredLists} />
+        <InvestmentTable filteredLists={filteredLists} />
       </div>
     </div>
   )

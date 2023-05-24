@@ -1,54 +1,45 @@
 import { Category, Recurrance } from '~/server/db'
 import { FiltersType } from '~/pages/dashboard/expense'
+import { useRef, type MouseEventHandler, MouseEvent } from 'react'
 
 type ExpenseTableFiltersProps = {
-  filters: FiltersType
   setFilters: React.Dispatch<React.SetStateAction<FiltersType>>
-  setFiltersApplied: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ExpenseTableFilters = ({ filters, setFilters, setFiltersApplied }: ExpenseTableFiltersProps) => {
+const ExpenseTableFilters = ({ setFilters }: ExpenseTableFiltersProps) => {
+  const dateFromRef = useRef<HTMLInputElement>(null)
+  const dateToRef = useRef<HTMLInputElement>(null)
+  const recurranceRef = useRef<HTMLSelectElement>(null)
+  const categoryRef = useRef<HTMLSelectElement>(null)
+
+  const handleSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    if (!dateFromRef.current || !dateToRef.current || !recurranceRef.current || !categoryRef.current) return
+    setFilters({
+      date: {
+        from: dateFromRef.current.value ? new Date(dateFromRef.current.value) : undefined,
+        to: dateToRef.current.value ? new Date(dateToRef.current.value) : undefined,
+      },
+      category: categoryRef.current.value === 'All' ? undefined : (categoryRef.current.value as Category),
+      recurrance: recurranceRef.current.value === 'All' ? undefined : (recurranceRef.current.value as Recurrance),
+    })
+  }
+
   return (
     <div className='flex gap-8 items-center flex-wrap'>
       <div className='flex gap-5'>
         <div>
           <label className='pr-3'>From</label>
-          <input
-            className='Input'
-            type='date'
-            onChange={(e) => {
-              setFiltersApplied((prev) => false)
-              setFilters((prev) => ({ ...prev, date: { ...prev.date, from: new Date(e.target.value) } }))
-            }}
-            defaultValue={filters.date?.from?.toISOString().split('T')[0]}
-          />
+          <input ref={dateFromRef} className='Input' type='date' />
         </div>
         <div>
           <label className='pr-3'>To</label>
-          <input
-            type='date'
-            className='Input'
-            defaultValue={filters.date?.to?.toISOString().split('T')[0]}
-            onChange={(e) => {
-              setFiltersApplied((prev) => false)
-              setFilters((prev) => ({ ...prev, date: { ...prev.date, to: new Date(e.target.value) } }))
-            }}
-          />
+          <input ref={dateToRef} type='date' className='Input' />
         </div>
       </div>
       <div className='flex gap-5 items-center'>
         <label htmlFor=''>Recurrance</label>
-        <select
-          id='recurrance'
-          className='block Input'
-          onChange={(e) => {
-            setFiltersApplied((prev) => false)
-            setFilters((prev) => ({
-              ...prev,
-              recurrance: e.target.value === 'All' ? undefined : (e.target.value as Recurrance),
-            }))
-          }}
-        >
+        <select ref={recurranceRef} id='recurrance' className='block Input'>
           <option value={undefined}>All</option>
           <option value='Daily'>Daily</option>
           <option value='Weekly'>Weekly</option>
@@ -58,17 +49,7 @@ const ExpenseTableFilters = ({ filters, setFilters, setFiltersApplied }: Expense
       </div>
       <div className='flex gap-5 items-center'>
         <label htmlFor=''>Category</label>
-        <select
-          id='category'
-          className='block Input'
-          onChange={(e) => {
-            setFiltersApplied((prev) => false)
-            setFilters((prev) => ({
-              ...prev,
-              category: e.target.value === 'All' ? undefined : (e.target.value as Category),
-            }))
-          }}
-        >
+        <select ref={categoryRef} id='category' className='block Input'>
           <option value={undefined}>All</option>
           <option value='Education'>Education</option>
           <option value='Health'>Health</option>
@@ -81,7 +62,7 @@ const ExpenseTableFilters = ({ filters, setFilters, setFiltersApplied }: Expense
       <div className='my-5 self-end'>
         <button
           className='px-3 py-2 bg-purple-300 rounded-md cursor-pointer hover:bg-purple-500 hover:text-slate-50 active:bg-purple-700'
-          onClick={() => setFiltersApplied(true)}
+          onClick={handleSubmit}
         >
           Apply
         </button>

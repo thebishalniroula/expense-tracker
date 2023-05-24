@@ -1,5 +1,5 @@
 import { Category, Recurrance } from '~/server/db'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { api } from '~/utils/api'
 import ExpenseTable from '~/components/expense/ExpenseTable'
 import ExpenseTableFilters from '~/components/expense/ExpenseTableFilters'
@@ -14,26 +14,28 @@ export type FiltersType = {
   category?: Category
 }
 
-const defaultFilters: FiltersType = {
-  date: { from: new Date(new Date().setDate(1)), to: new Date() },
-}
-
 export default function Table() {
   const [searchString, setSearchString] = useState('')
   const [showFilters, setShowFilters] = useState(false)
-  const [filtersApplied, setFiltersApplied] = useState(false)
-  const [filters, setFilters] = useState<FiltersType>(defaultFilters)
-  const { data: expense, isLoading } = api.expense.getAll.useQuery({ filters: filtersApplied ? filters : undefined })
+  const [filters, setFilters] = useState<FiltersType>({})
 
-  if (!filtersApplied && isLoading) {
+  const { data: expense, isLoading, refetch } = api.expense.getAll.useQuery({ filters })
+
+  useEffect(() => {
+    refetch()
+  }, [filters?.date?.from, filters?.date?.to, filters?.category, filters?.recurrance])
+
+  if (!showFilters && isLoading) {
     return <div className='flex justify-center items-center h-screen text-xl'>Loading...</div>
   }
-  if (!filtersApplied && !expense?.length) {
+  if (!showFilters && !expense?.length) {
     return <div className='flex justify-center items-center h-screen text-xl'>No expense entries yet.</div>
   }
+
   const filteredLists = searchString
     ? expense?.filter((inc) => inc.name.toLowerCase().includes(searchString.toLowerCase()))
     : expense
+
   return (
     <div className='flex items-center gap-14'>
       <div className='flex flex-col'>
@@ -86,7 +88,7 @@ export default function Table() {
                         />
                       </svg>
                     </div>
-                    <div className='hidden sm:block' onClick={() => setShowFilters((prev) => !prev)}>
+                    <div className='block' onClick={() => setShowFilters((prev) => !prev)}>
                       Filters
                     </div>
                   </span>
@@ -94,15 +96,15 @@ export default function Table() {
               </div>
             </div>
           </div>
-          {showFilters && (
-            <ExpenseTableFilters filters={filters} setFilters={setFilters} setFiltersApplied={setFiltersApplied} />
-          )}
-          <ExpenseTable filteredLists={filteredLists} />
+          {showFilters && <ExpenseTableFilters setFilters={setFilters} />}
+          <div className='flex gap-20 mt-10'>
+            <ExpenseTable filteredLists={filteredLists} />
+            <div className='flex flex-col gap-4'>
+              <PieChart />
+              <h2 className='text-center text-xl tracking-wide font-medium capitalize'>Expenses per category</h2>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className='flex flex-col gap-4'>
-        <PieChart />
-        <h2 className='text-center text-xl tracking-wide font-medium capitalize'>Expenses per category</h2>
       </div>
     </div>
   )

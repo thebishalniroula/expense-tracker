@@ -17,7 +17,7 @@ const Tabs = [
     link: '/dashboard/expense',
   },
   {
-    title: 'investments',
+    title: 'Investment',
     link: '/dashboard/investment',
   },
 ]
@@ -26,9 +26,9 @@ const Sidebar = () => {
   const router = useRouter()
   const [currentTab, setCurrentTab] = useState(getCurrentTab(router.asPath))
   return (
-    <div className='bg-purple-400 h-screen w-48 absolute left-0 top-0 bottom-0 py-10 px-5 flex flex-col gap-5'>
-      <p className='text-2xl uppercase font-medium cursor-pointer'>
-        Expense <span className=''>Tracker</span>
+    <div className='bg-purple-400 h-screen w-48 absolute left-0 top-0 bottom-0 py-5 px-5 flex flex-col gap-5'>
+      <p className='text-2xl uppercase font-medium cursor-pointer tracking-wider text-slate-800 p-2'>
+        Expense <span className='border-b'>Tracker</span>
       </p>
       {Tabs.map((tab, idx) => (
         <Link

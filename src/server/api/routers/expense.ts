@@ -55,10 +55,7 @@ export const expenseRouter = createTRPCRouter({
                 })
                 .optional(),
               recurrance: z.enum(['Daily', 'Weekly', 'Monthly', 'Yearly']).optional().nullable(),
-              category: z
-                .enum(['Education', 'Health', 'Entertainment', 'Food', 'Travel', 'Other'])
-                .optional()
-                .nullable(),
+              category: z.enum(['Education', 'Health', 'Entertainment', 'Food', 'Travel', 'Other']).optional(),
             })
             .optional(),
         })
@@ -74,6 +71,7 @@ export const expenseRouter = createTRPCRouter({
             lte: input?.filters?.date?.to,
           },
           recurrance: input?.filters?.recurrance,
+          category: input?.filters?.category,
         },
         orderBy: {
           date: 'desc',

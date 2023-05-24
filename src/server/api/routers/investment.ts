@@ -43,4 +43,46 @@ export const investmentRouter = createTRPCRouter({
       ])
       return investment
     }),
+
+  getAll: protectedProcedure
+    .input(
+      z
+        .object({
+          filters: z
+            .object({
+              date: z
+                .object({
+                  from: z.date().optional(),
+                  to: z.date().optional(),
+                })
+                .optional(),
+            })
+            .optional(),
+        })
+        .optional()
+    )
+    .query(({ ctx, input }) => {
+      // @Todo - implement pagination
+
+      return ctx.prisma.investment.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          date: {
+            gte: input?.filters?.date?.from,
+            lte: input?.filters?.date?.to,
+          },
+        },
+        orderBy: {
+          date: 'desc',
+        },
+        select: {
+          id: true,
+          name: true,
+          amount: true,
+          date: true,
+          roi: true,
+          roiRecurrance: true,
+        },
+      })
+    }),
 })

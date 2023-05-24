@@ -1,8 +1,9 @@
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { NextPageWithSidebar } from './_app'
 
-const Home = () => {
+const Home: NextPageWithSidebar = () => {
   const { data: session, status } = useSession()
 
   return (
@@ -64,6 +65,7 @@ const Home = () => {
 }
 
 export default Home
+Home.showSidebar = false
 const Nav = () => (
   <nav className='bg-gray-800 w-full'>
     <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
