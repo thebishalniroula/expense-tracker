@@ -1,28 +1,29 @@
-# Create T3 App
+# Expense Tracker
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
-## What's next? How do I make an app with this?
+## The app is live on
+### https://expense-tracker-thebishalniroula.vercel.app/
+Since I am using a free version of the planetscale database the database might go down in the future. So if you cannot use the application from the live link please run it locally on your machine.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## How to run this project locally?
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+1. Clone this repo 
+`git clone https://github.com/thebishalniroula/expense-tracker.git`
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+2. Go to the project folder 
+`cd expense-tracker` 
 
-## Learn More
+3. Duplicate `.env.example` into a new `.env` file 
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+4. Create a mysql database and put the connection string to the `DATABASE_URL` variable
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+5. Run `pnpm install`
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+6. Run `pnpm prisma db push`
 
-## How do I deploy this?
+7. Run `pnpm prisma generate` to make sure Prisma Client is generated.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+8. Run `pnpm run dev`
+
+9. Visit `http://localhost:3000` 
