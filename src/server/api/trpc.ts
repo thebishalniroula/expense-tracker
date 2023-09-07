@@ -127,3 +127,13 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed)
+
+export type ProtectedProcedureCtx = {
+  session: Session
+  prisma: typeof prisma
+}
+
+export type PublicProcedureCtx = {
+  session: Session | null
+  prisma: typeof prisma
+}
